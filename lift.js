@@ -18,14 +18,14 @@ const generateFloors = (floorCount) => {
                   <div class="text-slate-800 font-medium text-lg z-15 sm:text-md md:text-mg xl:text-2xl">floor-${i}</div>
                   ${ 
                   i !== 0 ?
-                      `<button class='rounded-lg bg-green-500 px-3 py-2 flex items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3' id='up-${i}' onclick='moveLiftUp(${i});'>
+                      `<button class='rounded-lg bg-green-500 px-3 py-2 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3' id='up-${i}' onclick='moveLiftUp(${i});'>
                                           <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6 fill-slate-100'>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
                           </svg>
                           <span class="ml-2 text-slate-100 hidden text-md md:block lg:text-xl">up</span>
                                         </button>` : ''
                   }
-                  <button class="rounded-lg bg-rose-500 px-3 py-2 z-15" id='down-${i}' onclick='moveLiftDown(${i})'>
+                  <button class="rounded-lg bg-rose-500 px-3 py-2 z-15 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3" id='down-${i}' onclick='moveLiftDown(${i})'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 fill-slate-100">
       <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5" />
     </svg>
