@@ -9,13 +9,29 @@
 </head>
 
 <body>
-  <div class='flex flex-col-reverse w-full h-screen bg-slate-100 overscroll-auto overflow-auto p-2 hidden' id='container'></div>
+  <div class="flex flex-col-reverse h-screen overflow-x-auto overscroll-auto hidden" id="main">
+  <div class="flex flex-auto overscroll-contain flex-row overscroll-auto" id="wrapper">
+    <div class="flex grow flex-col-reverse bg-slate-100 overscroll-contain" id='container'>
+      
+    </div>
+    <div class="flex flex-col-reverse sticky right-0 bg-slate-200 z-15 overscroll-contain" id="elevator">
+      
+    </div>
+  </div>
+</div>
 <div id='userInput'></div>
 
 <script src="./lift.js"></script>
 <script>
   generateUserInputScreen();
+  moveToBottom();
 </script>
+
+
+
+
+
+
 </body>
 
 </html>
