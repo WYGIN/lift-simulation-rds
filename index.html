@@ -41,9 +41,9 @@
   const formSubminButton = document.getElementById('formSubmit');
   const liftInputValue = document.getElementById('liftInput')
   const rootwidth = window.innerWidth;
-  const expectedLifts =  parseInt((rootwidth - (rootwidth * (20/100))) / 135 )
+  const expectedLifts =  Math.floor((rootwidth - (rootwidth * (20/100))) / (90 + 16) )
   formSubminButton.onclick = () => {
-    console.log(parseInt(liftInputValue.value))
+    console.log(Math.floor(liftInputValue.value))
     if(parseInt(liftInputValue.value) <= expectedLifts) {
       showLiftSimulationScreen(); 
       generateFloorsAndLifts(getFloorsCount(), getLiftsCount())
