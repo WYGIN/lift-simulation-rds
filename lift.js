@@ -15,7 +15,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
      ei.classList = 'w-full min-h-[240px] box-border flex gap-8 md:min-h-[300px] lg:min-h-[375px]'; 
      ei.innerHTML = ` 
      <div class="sticky right-0 text-slate-900 bg-transparent text-right border-t-2 w-full border-slate-800 flex flex-col items-end grow gap-2 px-2 items-center justify-center md:min-h-[300px] lg:min-h-[375px]"> 
-         <div class="absolute right-0 top-0 w-full flex flex-auto flex-col grow border-t-4 border-blue-600 divider -mt-1 md:border-t-6 lg:border-t-8"></div> 
+         <div class="absolute left-0 top-0 w-full flex flex-auto flex-col grow border-t-4 border-blue-600 divider -mt-1 md:border-t-6 lg:border-t-8"></div> 
                    <div class="text-slate-800 font-medium text-lg z-15 sm:text-md md:text-mg xl:text-2xl">floor-${i}</div> 
                    ${  
                    i !== 0 ? 
@@ -44,7 +44,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
      e.classList = 'w-full min-h-[240px] box-border flex gap-8 md:min-h-[300px] lg:min-h-[375px]'; 
      ei.querySelector('.divider').style.minWidth = `${rootwidth}px `; 
      e.innerHTML = ` 
-           <div class="relative flex w-full" title="floorContainer" id='floor-${i}'> 
+           <div class="relative flex items-end justify-end w-full" title="floorContainer" id='floor-${i}'> 
            </div> 
      `; 
      if(i === 0) { 
@@ -60,7 +60,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
    const baseFloor = document.getElementById('floor-0'); 
    for(let i = 0; i < liftCount; i++) { 
      let e = document.createElement('div');
-     e.classList = 'flex bg-slate-500 overflow-x-hidden min-w-[135px] h-[240px] gap-1 transition-all duration-[2500ms] ease-linear mx-2 lift z-15 md:min-w-[168.75] md:min-h-[300px] lg:min-w-[210.9375px] lg:min-h-[375px]'; 
+     e.classList = 'flex bg-slate-500 overflow-x-hidden min-w-[90px] max-h-[160px] min-h-[160px] gap-1 transition-all duration-[2500ms] ease-linear mx-2 lift z-15 box-border'; 
      e.dataset.position = 0; 
      e.dataset.moving = 'false'; 
      e.dataset.to = 0; 
