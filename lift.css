@@ -1896,3 +1896,21 @@
   .stroke-slate-100 {
     stroke: #f1f5f9;
   }
+  
+  .min-w-\[90px\] {
+    min-width: 90px;
+  }
+  .min-h-\[160px\] {
+    min-height: 160px;
+  }
+  .max-h-\[160px\] {
+    max-height: 160px;
+  }
+  
+  .justify-end {
+    justify-content: flex-end;
+  }
+  
+  .items-end {
+    align-items: flex-end;
+  }
