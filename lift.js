@@ -67,7 +67,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
       e.classList = 'w-full min-h-[240px] box-border flex gap-8 md:min-h-[300px] lg:min-h-[375px]';  
       ei.querySelector('.divider').style.minWidth = `${rootwidth}px `;  
       e.innerHTML = `  
-            <div class="relative flex items-end justify-end w-full" title="floorContainer" id='floor-${i}'>  
+            <div class="relative flex items-end justify-start flex-wrap w-full" title="floorContainer" id='floor-${i}'>  
             </div>  
       `;  
       if(i === 0) {  
@@ -126,7 +126,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
     if(nearLift.dataset.moving === 'false') {
       
       const liftAnim = [
-        { transform: `translateY(${ -document.getElementById('floor-0').clientHeight * floorCount }px)` },
+        { transform: `translateY(${ -document.getElementById('floor-0').clientHeight + (-document.getElementById('floor-1').clientHeight * (floorCount - 1) )}px)` },
       ];
       const opt = {
         duration: ((2500 * floorCount) - (nearLift.dataset.position * 2500)),
@@ -184,7 +184,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
      if (nearLift.dataset.moving === 'false') {
      
        const liftAnim = [
-         { transform: `translateY(${ -document.getElementById('floor-0').clientHeight * floorCount }px)` },
+         { transform: `translateY(${ -document.getElementById('floor-0').clientHeight + (-document.getElementById('floor-1').clientHeight * (floorCount - 1) )}px)` },
            ];
        const opt = {
          duration: ((nearLift.dataset.position * 2500) - (2500 * floorCount)),
