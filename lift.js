@@ -16,8 +16,8 @@ const addToDownQueue = (item) => {
      downQueue.push(item);
    const trigger = isLiftFree();
    if (trigger != null && downQueue.length != 0) {
-     console.log('lift is free & calling moveLiftUp');
-     window.requestAnimationFrame(moveLiftUp);
+     console.log('lift is free & calling moveLiftDown');
+     window.requestAnimationFrame(moveLiftDown);
    }
 }
 
