@@ -9,7 +9,7 @@
   </head>  
     
   <body>  
-  <div class="flex flex-col-reverse h-screen overflow-auto hidden" id="main">  
+  <div class="flex flex-col-reverse h-screen overflow-x-auto overscroll-auto hidden" id="main">  
     <div class="flex flex-auto flex-row" id="wrapper">  
          <div class="flex flex-col-reverse sticky right-0 bg-slate-200 z-15 overscroll-contain flex-nowrap shrink-0 min-w-1/5 max-w-1/5 lg:ml-3" id="elevator"> 
      
@@ -44,18 +44,18 @@
    const expectedLifts =  Math.floor((rootwidth - (rootwidth * (20/100))) / (90 + 16) ) 
    formSubminButton.onclick = () => { 
      console.log(Math.floor(liftInputValue.value)) 
-    /* if(parseInt(liftInputValue.value) <= expectedLifts) { */
+     if(parseInt(liftInputValue.value) <= expectedLifts) { 
        showLiftSimulationScreen();  
        generateFloorsAndLifts(getFloorsCount(), getLiftsCount()) 
-    /* } else if(isNaN(liftInputValue.value)) { 
+     } else if(isNaN(liftInputValue.value)) { 
        document.getElementById('liftError').innerText = `invalid input. value should be a number` 
       } else { 
        document.getElementById('liftError').innerText = `invalid input. value should be between 1 to ${expectedLifts}` 
-     }*/ 
+     } 
       
    } 
-    moveToBottom(); 
-    console.log( window.innerWidth - (window.innerWidth * (25/100))) 
+   // moveToBottom(); 
+    console.log( window.innerWidth - (window.innerWidth * (25/100)))
   </script>  
     
   </body>  
