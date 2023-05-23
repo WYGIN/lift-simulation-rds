@@ -1,10 +1,35 @@
+const upQueue = [];
+const downQueue = [];
+
+const floorwidth = (window.innerWidth - (window.innerWidth * (25/100)));
+
+const addToUpQueue = (item) => {
+ if(!(isLiftMovingToFloor(item)))
+    upQueue.push(item);
+    const trigger = isLiftFree();
+  if(trigger != null && upQueue.length != 0) {
+    console.log('lift is free & calling moveLiftUp');
+    window.requestAnimationFrame(moveLiftUp);
+  }
+}
+
+const addToDownQueue = (item) => {
+   if (!(isLiftMovingToFloor(item)))
+     downQueue.push(item);
+   const trigger = isLiftFree();
+   if (trigger != null && downQueue.length != 0) {
+     console.log('lift is free & calling moveLiftDown');
+     window.requestAnimationFrame(moveLiftDown);
+   }
+}
+
 const generateFloorsAndLifts = (floorCount, liftCount) => {  
-   // console.log(floorCount)  
+
     generateFloors(floorCount);  
     generateLifts(liftCount);  
   }  
     
-  const generateFloors = (floorCount) => {  
+  const generateFloors = (floorCount) => {
     let baseFloor;  
     let elevator = document.getElementById('elevator');  
     const container = document.getElementById('container'); 
@@ -19,13 +44,13 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
                     <div class="text-slate-800 font-medium text-lg z-15 sm:text-md md:text-mg xl:text-2xl">floor-${i}</div>  
                     ${   
                     i !== 0 ?  
-                        `<button class='rounded-lg bg-green-500 px-3 py-2 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 min-w-1/2 max-w-1/2' id='up-${i}' onclick='moveLiftUp(${i});'>  
+                        `<button class='rounded-lg bg-green-500 px-3 py-2 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 min-w-1/2 max-w-1/2' id='up-${i}' onclick='addToUpQueue(${i});'>  
                                             <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='stroke-slate-100' class='w-6 h-6 fill-slate-100'>  
                               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />  
                             </svg>  
                             <span class="ml-2 text-slate-100 hidden text-md md:block lg:text-xl">up</span>  
                                           </button>` : ` 
-                     <button class='rounded-lg bg-green-500 px-3 py-2 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 min-w-1/2 max-w-1/2' id='backButton' onclick="showUserInputScreen(); document.getElementById('container').innerHTML = ''; document.getElementById('elevator').innerHTML = '';"> 
+                     <button class='rounded-lg bg-green-500 px-3 py-2 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 min-w-1/2 max-w-1/2' id='backButton' onclick="showUserInputScreen(); document.getElementById('container').innerHTML = ''; document.getElementById('elevator').innerHTML = ''; upQueue.length = 0; downQueue.length = 0;"> 
                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="stroke-slate-100" class="w-6 h-6 fill-slate-100"> 
    <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" /> 
  </svg> 
@@ -33,7 +58,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
                      </button> 
                                           `  
                     }  
-                    <button class="rounded-lg bg-rose-500 px-3 py-2 z-15 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 min-w-1/2 max-w-1/2" id='down-${i}' onclick='moveLiftDown(${i})'>  
+                    <button class="rounded-lg bg-rose-500 px-3 py-2 z-15 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 min-w-1/2 max-w-1/2" id='down-${i}' onclick='addToDownQueue(${i})'>  
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="stroke-slate-100" class="w-6 h-6 fill-slate-100">  
         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5" />  
       </svg>  
@@ -44,7 +69,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
       e.classList = 'w-full min-h-[240px] box-border flex gap-8 md:min-h-[300px] lg:min-h-[375px]';  
       ei.querySelector('.divider').style.minWidth = `${rootwidth}px `;  
       e.innerHTML = `  
-            <div class="relative flex items-end w-full" title="floorContainer" id='floor-${i}'>  
+            <div class="relative flex items-end justify-start w-full" title="floorContainer" id='floor-${i}'>  
             </div>  
       `;  
       if(i === 0) {  
@@ -52,7 +77,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
       } 
       elevator.appendChild(ei); 
       container.appendChild(e); 
-    } 
+    }
     return baseFloor;  
   }  
     
@@ -60,108 +85,173 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
     const baseFloor = document.getElementById('floor-0');  
     for(let i = 0; i < liftCount; i++) {  
       let e = document.createElement('div'); 
-      e.classList = 'flex bg-slate-500 overflow-x-hidden min-w-[90px] max-h-[160px] min-h-[160px] gap-1 transition-all duration-[2500ms] ease-linear mx-2 lift z-15 box-border';  
+      e.classList = 'flex bg-slate-500 overflow-x-hidden min-w-[90px] max-h-[160px] min-h-[160px] gap-1 transition-all duration-[2500ms] ease-linear mx-2 lift z-15 box-border lift';
       e.dataset.position = 0;  
       e.dataset.moving = 'false';  
       e.dataset.to = 0;  
       e.setAttribute('id', `lift-${i}`)  
       e.innerHTML = `  
-          <div class="basis-1/2 bg-slate-600 my-1 transition-all duration-[1500ms] ease-in-out leftDoor justify-items-end flex text-slate-100" id='leftDoor-lift-${i}'>${i}</div>  
-          <div class="basis-1/2 bg-slate-600 my-1 ease-in-out transition-all duration-[1500ms] rightDoor" id='rightDoor-lift-${i}'></div>  
+          <div class="basis-1/2 bg-slate-600 my-1 transition-all duration-[1500ms] ease-in-out leftDoor justify-items-end flex text-slate-100 door" id='leftDoor-lift-${i}'>${i}</div>  
+          <div class="basis-1/2 bg-slate-600 my-1 ease-in-out transition-all duration-[1500ms] rightDoor door" id='rightDoor-lift-${i}'></div>  
       `; 
       baseFloor.appendChild(e);  
     }  
-  }  
+  }
     
-  const moveLiftUp = (floorCount) => {  
-   // const lifts = getLiftsCount();  
-    const nearLift = getNearLiftUp(floorCount);  
-    //console.log('nearest lift up: ', nearLift.getAttribute('id'));  
-  //  console.log(`moving lift in rest: ${nearLift.dataset.position === 'false'}`)  
-   // openLiftDoors(nearLift, floorCount, (nearLift, floorCount) => {  
-      // console.log('lift callback', lift);  
-      console.log('moveLiftUp is in rest at current floor?: ', isLiftInFloor(floorCount) && getLiftInFloor(floorCount) != null && getLiftInFloor(floorCount).dataset.moving === 'false')  
-      if(isLiftInFloor(floorCount) && getLiftInFloor(floorCount) != null && getLiftInFloor(floorCount).dataset.moving === 'false') {  
-        openLiftDoors(getLiftInFloor(floorCount), floorCount, (nearLift, floorCount) => {  
-          nearLift.dataset.moving = 'true';  
-          setTimeout(() => {  
-            nearLift.dataset.moving = 'false';  
-          }, 1500)  
-          // nearLift.dataset.to = floorCount;  
-        });  
-        return;  
-      }  
-      if (isLiftMovingToFloor(floorCount)) {  
-        return;  
-      }  
-      if(!(/*isLiftInFloor(floorCount) ||*/ isLiftMovingToFloor(floorCount))) {  
-        nearLift.dataset.moving = 'true';  
-        nearLift.dataset.to = floorCount;  
-        nearLift.style.transition = `all ${(/*Math.round*/(2.5 * floorCount) - (nearLift.dataset.position * 2.5))}s linear`;  
-        nearLift.style.transform = `translateY(${ -document.getElementById('floor-0').clientHeight * floorCount }px)`;  
-        setTimeout(() => {  
-          nearLift.addEventListener('transitionend', openLiftDoors(nearLift, floorCount, (nearLift, floorCount) => {  
-            nearLift.dataset.position = floorCount;  
-            nearLift.dataset.moving = 'false';  
-          }));  
-        }, (/*Math.round*/(2500 * floorCount) - (nearLift.dataset.position * 2500)))  
-      }  
+  const moveLiftUp = () => {
+   // const lifts = getLiftsCount();
+   console.log(upQueue);
+    const floorCount = upQueue.shift();
+    const nearLift = getNearLiftUp(floorCount);
+   // console.log('moveLiftUp is Called', nearLift);
+    if(!nearLift) {
+      upQueue.unshift(floorCount)
+      console.log('nearLift is null! in moveLiftUp')
+      return;
+    }
+    if (nearLift.dataset.moving === 'true') {
+      console.log('lift is still in movement !!!!!!!!!!!!!')
+      return;
+    }
+    
+    if(parseInt(nearLift.dataset.position) === parseInt(floorCount) && nearLift.dataset.moving === 'false') {
+        console.log('lift doors openning since lift is in current floor');
+         const liftIn = getLiftInFloor(floorCount);
+         liftIn.dataset.moving = 'true';
+      //   setTimeout(() => {
+           window.requestAnimationFrame(() => {
+             openLiftDoors(liftIn)
+           });
+     //    }, 500)
+        return;
+    }
+    if(nearLift.dataset.moving === 'false') {
+      
+      const liftAnim = [
+        { transform: `translateY(${ -document.getElementById('floor-0').clientHeight + (-document.getElementById('floor-1').clientHeight * (floorCount - 1) )}px)` },
+      ];
+      const opt = {
+        duration: ((2500 * floorCount) - (nearLift.dataset.position * 2500)),
+        iterations: 1,
+        fill: 'forwards',
+      };
+      
+      window.requestAnimationFrame(() => {
+        nearLift.dataset.moving = 'true';
+        nearLift.dataset.to = floorCount;
+        const nearAnim = nearLift.animate(liftAnim, opt);
+        nearAnim.commitStyles();
+        nearAnim.onfinish = () => {
+          window.requestAnimationFrame(() => {
+            openLiftDoors(nearLift);
+            nearLift.dataset.position = floorCount;
+          })
+        }
+      });
+      
+      } else {
+        console.log('none of the conditions met in moveLiftUp')
+      }
+      
+      console.log('moveLiftUp last block of code this is')
    // });  
-  }  
+  }
     
-  const moveLiftDown = (floorCount) => {  
-   // const lifts = getLiftsCount();  
-     const nearLift = getNearLiftDown(floorCount);  
-     //console.log('nearest lift up: ', nearLift.getAttribute('id'));  
-     //  console.log(`moving lift in rest: ${nearLift.dataset.position === 'false'}`)  
-     // openLiftDoors(nearLift, floorCount, (nearLift, floorCount) => {  
-     // console.log('lift callback', lift);  
-    // console.log('moveLiftDown is in rest at current floor?: ', isLiftInFloor(floorCount) && getLiftInFloor(floorCount) != null && getLiftInFloor(floorCount).dataset.moving === 'false')  
-     if (isLiftInFloor(floorCount) && getLiftInFloor(floorCount) != null && getLiftInFloor(floorCount).dataset.moving === 'false') {  
-       openLiftDoors(getLiftInFloor(floorCount), floorCount, (nearLift, floorCount) => {  
-         nearLift.dataset.moving = 'true';  
-         setTimeout(() => {  
-           nearLift.dataset.moving = 'false';  
-         }, 1500)  
-         // nearLift.dataset.to = floorCount;  
-       });  
-       return;  
-     }  
-     if (isLiftMovingToFloor(floorCount)) {  
-       return;  
-     }  
-     if (!(/*isLiftInFloor(floorCount) ||*/ isLiftMovingToFloor(floorCount))) {  
-       nearLift.dataset.moving = 'true';  
-       nearLift.dataset.to = floorCount;  
-       nearLift.style.transition = `all ${(/*Math.round*/ (nearLift.dataset.position * 2.5) - (2.5 * floorCount))}s linear`;  
-       nearLift.style.transform = `translateY(${ -document.getElementById('floor-0').clientHeight * floorCount }px)`;  
-       setTimeout(() => {  
-         nearLift.addEventListener('transitionend', openLiftDoors(nearLift, floorCount, (nearLift, floorCount) => {  
-           nearLift.dataset.position = floorCount;  
-           nearLift.dataset.moving = 'false';  
-         }));  
-       }, ( /*Math.round*/(nearLift.dataset.position * 2500) -  (2500 * floorCount) ))  
-     }  
+  const moveLiftDown = () => {  
+     console.log(downQueue);
+     const floorCount = downQueue.shift();
+     const nearLift = getNearLiftDown(floorCount);
+     // console.log('moveLiftUp is Called', nearLift);
+     if (!nearLift) {
+       downQueue.unshift(floorCount)
+       console.log('nearLift is null! in moveLiftUp')
+       return;
+     }
+     if (nearLift.dataset.moving === 'true') {
+       console.log('lift is still in movement !!!!!!!!!!!!!')
+       return;
+     }
+     
+     if (parseInt(nearLift.dataset.position) === parseInt(floorCount) && nearLift.dataset.moving === 'false') {
+       console.log('lift doors openning since lift is in current floor');
+       const liftIn = getLiftInFloor(floorCount);
+       liftIn.dataset.moving = 'true';
+       //   setTimeout(() => {
+       window.requestAnimationFrame(() => {
+         openLiftDoors(liftIn)
+       });
+       //    }, 500)
+       return;
+     }
+     if (nearLift.dataset.moving === 'false') {
+     
+       const liftAnim = [
+         { transform: `translateY(${ -document.getElementById('floor-0').clientHeight + (-document.getElementById('floor-1').clientHeight * (floorCount - 1) )}px)` },
+           ];
+       const opt = {
+         duration: ((nearLift.dataset.position * 2500) - (2500 * floorCount)),
+         iterations: 1,
+         fill: 'forwards',
+       };
+     
+       window.requestAnimationFrame(() => {
+         nearLift.dataset.moving = 'true';
+         nearLift.dataset.to = floorCount;
+         const nearAnim = nearLift.animate(liftAnim, opt);
+         nearAnim.commitStyles();
+         nearAnim.onfinish = () => {
+           window.requestAnimationFrame(() => {
+             openLiftDoors(nearLift);
+             nearLift.dataset.position = floorCount;
+           })
+         }
+       });
+     
+     } else {
+       console.log('none of the conditions met in moveLiftUp')
+     }
+     
+     console.log('moveLiftUp last block of code this is')
      // });  
   }  
     
-  const openLiftDoors = (lift, floorCount, callback) => {  
-   // console.log(lift)  
-    const id = lift.getAttribute('id');  
-    const leftDoor = document.getElementById(`leftDoor-${id}`);  
-    const rightDoor = document.getElementById(`rightDoor-${id}`);  
-    leftDoor.style.transition = 'all 1.5s linear'  
-    rightDoor.style.transition = 'all 1.5s linear'  
-    leftDoor.style.transform = "translateX(-95%)";  
-    rightDoor.style.transform = "translateX(95%)";  
-    setTimeout(() => {  
-      leftDoor.style.transform = "translateX(0%)";  
-      rightDoor.style.transform = "translateX(0%)";  
-      setTimeout(() => {  
-        leftDoor.addEventListener('transitionend', callback(lift, floorCount));  
-      },1500);  
-    }, 1500);  
-  }  
+  const openLiftDoors = (lift) => {
+    
+    const leftAnim = [
+      { transform: 'translateX(-95%)' },
+    ];
+    const rightAnim = [
+      { transform: 'translateX(95%)' }
+    ];
+    const resetAnim = [
+      { transform: 'translateX(0%)'}
+    ]
+    const opt = {
+      duration: 1250,
+      iterations: 1,
+      fill: 'forwards',
+    };
+  //  console.log(lift);
+    const leftDoor = lift.querySelector('.leftDoor');
+    const rightDoor = lift.querySelector('.rightDoor')
+    
+    const handle = window.requestAnimationFrame(() => {
+      const leftAnimatable = leftDoor.animate(leftAnim, opt);
+      const rightAnimatable = rightDoor.animate(rightAnim, opt);
+      (leftAnimatable && rightAnimatable).commitStyles();
+      (leftAnimatable && rightAnimatable).onfinish = () => {
+        window.requestAnimationFrame(() => {
+          const leftResetAnimatable = leftDoor.animate(resetAnim, opt);
+          const rightResetAnimatable = rightDoor.animate(resetAnim, opt);
+          rightResetAnimatable.onfinish = () => {
+            lift.dataset.moving = 'false';
+            if (upQueue.length != 0 && isLiftFree()) window.requestAnimationFrame(moveLiftUp);
+            else if (downQueue.length != 0 && isLiftFree()) window.requestAnimationFrame(moveLiftDown);
+          }
+        });
+      }
+    });
+  }
     
   const generateUserInputScreen = () => {  
     let e = document.getElementById('userInput');  
@@ -206,22 +296,22 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
   }  
     
   const getNearLiftUp = (floorCount) => {  
-    const lifts = getLiftsCount();  
-    let nearLift;  
+    const lifts = getLiftsCount();
+    let nearLift;
     for(let i = 0; i < lifts; i++) {  
       const lift = document.getElementById(`lift-${i}`);  
-      if(parseInt(lift.dataset.position) < parseInt(floorCount) && lift.dataset.moving === 'false') {  
+      if(parseInt(lift.dataset.position) <= parseInt(floorCount) && lift.dataset.moving === 'false') {  
         if(nearLift == null) {  
-          //console.log(`nearLift is null & set to ${lift.getAttribute('id')}`)  
+          console.log(`nearLift is null & set to ${lift.getAttribute('id')}`)  
           nearLift = lift;  
-        }  
-        if(parseInt(nearLift.dataset.position) < parseInt(lift.dataset.position)) {  
-          //console.log(`checking inside if condition: ${parseInt(nearLift.dataset.position) < lift.dataset.position}`)  
-          //console.log(`nearLift current position: ${nearLift.dataset.position} of ${nearLift.getAttribute('id')} is overridden by ${lift.getAttribute('id')} at position ${lift.dataset.position}`)  
+        }
+        
+        if(parseInt(nearLift.dataset.position) < parseInt(lift.dataset.position)) {
+          console.log(`nearLift current position: ${nearLift.dataset.position} of ${nearLift.getAttribute('id')} is overridden by ${lift.getAttribute('id')} at position ${lift.dataset.position}`)  
           nearLift = lift;  
         }  
       }  
-      //console.log(`nearLift lift ${lift.getAttribute('id')} is either moving (${lift.dataset.moving}) or with position ${lift.dataset.position}`);  
+      console.log(`nearLift lift ${lift.getAttribute('id')} is either moving (${lift.dataset.moving}) or with position ${lift.dataset.position} lift might be null`);  
     }  
    // nearLift.dataset.moving = 'true';  
     return nearLift;  
@@ -234,16 +324,13 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
       const lift = document.getElementById(`lift-${i}`);  
       if (parseInt(lift.dataset.position) > parseInt(floorCount) && lift.dataset.moving === 'false') {  
         if (nearLift == null) {  
-          //console.log(`nearLift is null & set to ${lift.getAttribute('id')}`)  
+          console.log(`nearLift is null & set to ${lift.getAttribute('id')} moving ? ${lift.dataset.moving}`)
+          nearLift = lift;
+        }  
+        if (parseInt(nearLift.dataset.position) > parseInt(lift.dataset.position)) {
           nearLift = lift;  
         }  
-        if (parseInt(nearLift.dataset.position) > parseInt(lift.dataset.position)) {  
-          //console.log(`checking inside if condition: ${parseInt(nearLift.dataset.position) < lift.dataset.position}`)  
-          //console.log(`nearLift current position: ${nearLift.dataset.position} of ${nearLift.getAttribute('id')} is overridden by ${lift.getAttribute('id')} at position ${lift.dataset.position}`)  
-          nearLift = lift;  
-        }  
-      }  
-      //console.log(`nearLift lift ${lift.getAttribute('id')} is either moving (${lift.dataset.moving}) or with position ${lift.dataset.position}`);  
+      }
     }  
     // nearLift.dataset.moving = 'true';  
     return nearLift;  
@@ -257,7 +344,6 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
     const lifts = getLiftsCount();  
     for(let i = 0; i < lifts; i++) {  
       const lift = document.getElementById(`lift-${i}`);  
-      console.log(`floor-${floorNo} ${lift.getAttribute('id')}`,`lift position: ${lift.dataset.position} ${lift.dataset.position == floorNo}`)  
       if(lift.dataset.position == floorNo) {  
         console.log(`${lift} is in floor ${floorNo}`)  
         return true;  
@@ -271,7 +357,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
     const lifts = getLiftsCount();  
     for(let i = 0; i < lifts; i++) {  
       const lift = document.getElementById(`lift-${i}`);  
-      if(lift.dataset.to == floorNo) {  
+      if(lift.dataset.to == floorNo && lift.dataset.moving === 'true') {
         console.log(`${lift.getAttribute('id')} is moving to floor ${floorNo}`)  
         return true;  
       }  
@@ -285,8 +371,8 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
     for (let i = 0; i < lifts; i++) {  
       const lift = document.getElementById(`lift-${i}`);  
       if (lift.dataset.position == floorNo) {  
-        console.log(`${lift.getAttribute('id')} is in floor floorNo`, 'getLiftsInFloor')  
-        return lift;  
+        console.log(`${lift.getAttribute('id')} is in floor ${floorNo}`, 'getLiftsInFloor')  
+        return lift;
       }  
     }  
     console.log(`there is no lift in floor ${floorNo}`)  
@@ -305,3 +391,21 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
     console.log(`there is no lift moving to ${floorNo}`)  
     return null;  
   }
+  
+  const isLiftFree = () => {
+    const lifts = document.querySelectorAll('.lift');
+    const liftFree = [...lifts].map((lift) => {
+      //console.log(lift);
+      if(lift.dataset.moving === 'false') return lift;
+    })
+    return liftFree;
+  }
+  
+  window.addEventListener("resize", (event) => {
+    const liftWidth = ((floorwidth - (16 * getLiftsCount()) )/ getLiftsCount());
+    const lifts = document.querySelectorAll('.lift');
+    [...lifts].map((lift) => {
+      lift.style.minWidth = liftWidth;
+      lift.style.maxHeight = liftWidth * (16/9);
+    })
+  });
