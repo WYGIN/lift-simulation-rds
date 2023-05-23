@@ -1914,3 +1914,21 @@
    .items-end { 
      align-items: flex-end; 
    }
+   
+   .lift {
+     animation: 3s infinite alternate liftAnim;
+   }
+   
+   @keyframes liftAnim {
+     from {
+       transform: translateX(0%);
+     }
+   }
+   
+   .flex-wrap {
+     flex-wrap: wrap;
+   }
+   
+   .justify-start {
+     justify-content: flex-start;
+   }
