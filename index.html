@@ -41,7 +41,7 @@
    const formSubminButton = document.getElementById('formSubmit'); 
    const liftInputValue = document.getElementById('liftInput') 
    const rootwidth = window.innerWidth; 
-   const expectedLifts =  Math.floor((rootwidth - (rootwidth * (20/100))) / (90 + 0) ) 
+   const expectedLifts =  Math.floor((rootwidth - (rootwidth * (20/100))) / (90 + 8) ) 
    formSubminButton.onclick = () => { 
      console.log(Math.floor(liftInputValue.value)) 
      if(parseInt(liftInputValue.value) <= expectedLifts) { 
