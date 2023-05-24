@@ -1,12 +1,12 @@
 const queue = [];
-const stashQueue = [];
+//const stashQueue = [];
 
 const addToqueue = (item) => {
  if(!(isLiftMovingToFloor(item) && queue.includes(item)))
     queue.push(item);
-  if(isLiftFree() && queue.length != 0) {
+  if(isLiftFree() && queue.length != 0 && !isLiftMovingToFloor(queue[0])) {
     console.log('lift is free & calling moveLift from addToQueue');
-    /*window.requestAnimationFrame(*/moveLift()/*);*/
+    window.requestAnimationFrame(moveLift);
   }
 }
 
@@ -72,7 +72,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
     const baseFloor = document.getElementById('floor-0');  
     for(let i = 0; i < liftCount; i++) {  
       let e = document.createElement('div'); 
-      e.classList = 'bg-slate-500 overflow-hidden max-w-[90px] max-h-[160px] gap-1 transition-all duration-[2500ms] ease-linear lift z-15 box-border lift';
+      e.classList = 'bg-slate-500 overflow-hidden max-w-[90px] max-h-[160px] gap-1 transition-all duration-[2500ms] ease-linear lift z-15 box-border lift mx-1';
       e.dataset.position = 0;  
       e.dataset.moving = 'false';  
       e.dataset.to = 0;  
@@ -88,13 +88,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
   const moveLift = () => {
     let floorNo = null;
     const freeLift = isLiftFree();
-    if(stashQueue.length != 0 && freeLift) {
-     /* stashQueue.sort((a, b) => {
-        if(freeLift.dataset.position >= stashQueue[0]) return (b - a);
-        else return (a - b);
-      })*/
-      floorNo = stashQueue.shift();
-    } else if(queue.length != 0 && freeLift) {
+    if(queue.length != 0 && freeLift) {
       /*queue.sort((a, b) => {
         if(freeLift.dataset.position >= queue[0]) return ( b - a);
         else return (a - b);
@@ -102,6 +96,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
       floorNo = queue.shift();
     }
     const nearLift = getNearLift(floorNo);
+   // console.log(nearLift);
     if(parseInt(nearLift.dataset.position) === parseInt(floorNo)) {
       nearLift.dataset.moving = 'true';
       window.requestAnimationFrame(() => {
@@ -110,8 +105,8 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
       return;
     }
     if(nearLift.dataset.moving === 'true') {
-      stashQueue.push(floorNo);
-      window.requestAnimationFrame(moveLift);
+     // console.log('lift is moving currently .....')
+      window.requestAnimationFrame(moveLift());
       return;
     }
     const liftAnim = [
@@ -137,7 +132,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
   }
     
   const openLiftDoors = (lift) => {
-    
+    console.log('called openDoors');
     const leftAnim = [
       { transform: 'translateX(-95%)' },
     ];
@@ -166,7 +161,7 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
           const rightResetAnimatable = rightDoor.animate(resetAnim, opt);
           rightResetAnimatable.onfinish = () => {
             lift.dataset.moving = 'false';
-            if(isLiftFree() && (stashQueue.length != 0 || queue.length != 0))
+            if(isLiftFree() && queue.length != 0 && !isLiftMovingToFloor(queue[0]))
               window.requestAnimationFrame(moveLift);
           }
         });
@@ -207,38 +202,17 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
   }  
   const getLiftsCount = () => {  
     return document.getElementById('liftInput').value;  
-  }  
-    
-  const delay = ms => new Promise(res => setTimeout(res, ms));  
-    
-  const wait = async () => {  
-    await delay(2500)  
-  }  
+  }
     
   const getNearLift = (floorNo) => {
     const lifts = document.querySelectorAll('.lift');
-    const absoluteDiffs = [...lifts].map(element => {
-      if (element.dataset.moving === 'false')
-        return Math.abs(floorNo - element.dataset.position);
-      else return Number.MAX_VALUE;
-    });
+    const restLifts = [...lifts].filter(lift => lift.dataset.moving === 'false');
+    const absoluteDiffs = restLifts.map((lift) => Math.abs(floorNo - lift.dataset.position));
     const minAbsoluteDiff = Math.min(...absoluteDiffs);
-    const nearestElement = [...lifts].find(element => Math.abs(floorNo - element.dataset.position) === minAbsoluteDiff);
-    return nearestElement;
+    const nearestLift = restLifts.find(lift => Math.abs(floorNo - lift.dataset.position) === minAbsoluteDiff);
+    // console.log('returning this lift as nearLift', `id: ${nearestLift.getAttribute('id')}, moving: ${nearestLift.dataset.moving}, minAbsoluteDiff: ${minAbsoluteDiff} from ${absoluteDiffs}`);
+    return nearestLift;
   }
-    
-  const isLiftInFloor = (floorNo) => {  
-    const lifts = getLiftsCount();  
-    for(let i = 0; i < lifts; i++) {  
-      const lift = document.getElementById(`lift-${i}`);  
-      if(lift.dataset.position == floorNo) {  
-        console.log(`${lift} is in floor ${floorNo}`)  
-        return true;  
-      }  
-    }  
-    console.log(`there is no lift in floor ${floorNo}`)  
-    return false;  
-  }  
     
   const isLiftMovingToFloor = (floorNo) => {  
     const lifts = getLiftsCount();  
@@ -263,19 +237,6 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
       }  
     }  
     console.log(`there is no lift in floor ${floorNo}`)  
-    return null;  
-  }  
-    
-  const getLiftMovingToFloor = (floorNo) => {  
-    const lifts = getLiftsCount();  
-    for (let i = 0; i < lifts; i++) {  
-      const lift = document.getElementById(`lift-${i}`);  
-      if (lift.dataset.to == floorNo) {  
-        console.log(`${lift.getAttribute('id')} is moving to floor ${floorNo}`)  
-        return lift;  
-      }  
-    }  
-    console.log(`there is no lift moving to ${floorNo}`)  
     return null;  
   }
   
