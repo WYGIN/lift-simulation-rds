@@ -666,7 +666,12 @@
   .mx-2 {  
     margin-left: 0.5rem;  
     margin-right: 0.5rem;  
-  }  
+  }
+  
+   .mx-1 {
+     margin-left: 0.25rem;
+     margin-right: 0.25rem;
+   }
     
   .mx-auto {  
     margin-left: auto;  
@@ -1900,6 +1905,9 @@
    .min-w-\[90px\] { 
      min-width: 90px; 
    } 
+     .max-w-\[90px\] {
+       max-width: 90px;
+     }
    .min-h-\[160px\] { 
      min-height: 160px; 
    } 
@@ -1917,6 +1925,12 @@
    
    .lift {
      animation: 3s infinite alternate liftAnim;
+     aspect-ratio: 9/16;
+     max-width: 90px;
+     max-height: 160px;
+     flex-basis: auto;
+     flex-grow: 1;
+     flex-shrink: 1;
    }
    
    @keyframes liftAnim {
@@ -1932,3 +1946,12 @@
    .justify-start {
      justify-content: flex-start;
    }
+   
+ .door {
+   width: 50%;
+   height: 100%;
+ }
+ 
+ .border-1 {
+   border-width: 1px;
+ }
