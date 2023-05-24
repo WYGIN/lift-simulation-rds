@@ -2,7 +2,7 @@ const queue = [];
 //const stashQueue = [];
 
 const addToqueue = (item) => {
- if(!(isLiftMovingToFloor(item) && queue.includes(item)))
+ if(!(isLiftMovingToFloor(item) || queue.includes(item)))
     queue.push(item);
   if(isLiftFree() && queue.length != 0 && !isLiftMovingToFloor(queue[0])) {
     console.log('lift is free & calling moveLift from addToQueue');
