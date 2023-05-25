@@ -20,8 +20,8 @@
       </div> 
     </div>  
   </div>
-    <div class='flex items-center justify-between p-2'>
-     <button class='rounded-lg bg-green-500 px-3 py-2 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 max-w-1/2' id='backButton' onclick="showUserInputScreen(); document.getElementById('container').innerHTML = ''; document.getElementById('elevator').innerHTML = ''; queue.length = 0; queue.length = 0;">
+    <div class='flex items-center justify-between max-h-[64px] min-h-[64px] px-8 my-auto'>
+     <button class='z-15 button my-auto' id='backButton' onclick="showUserInputScreen(); document.getElementById('container').innerHTML = ''; document.getElementById('elevator').innerHTML = ''; queue.length = 0; queue.length = 0;">
        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="stroke-slate-100" class="w-6 h-6 fill-slate-100">
          <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
        </svg>
@@ -30,16 +30,16 @@
      <p class='w-full text-center text-2xl font-semibold tracking-tight'>Lift Simulation</p>
    </div>
   </div>
-  <div id='userInput'> 
+  <div id='userInput' class='grow'> 
          <div class="flex items-center justify-center h-screen grow w-full"> 
-           <div class="bg-slate-200 rounded-lg px-5 py-2 flex flex-col gap-2 grow md:basis-2/3 lg:basis-3/4"> 
+           <div class="bg-slate-200 rounded-lg px-5 py-2 flex flex-col gap-2 grow basis-full md:basis-2/3 lg:basis-1/2"> 
              <legend class="text-2xl">Fill the form for Lift Simulation</legend> 
              <label>Enter the no of Floors:</label> 
              <input id='floorInput' class="px-3 py-1 rounded" type="number" required name="floors" min="1" value="1" /> 
              <label for="number">Enter the no of Lifts:</label> 
              <input id="liftInput" class="px-3 py-1 rounded" type="number" required name="lifts" min="1" value="1"/> 
              <p id="liftError" class="text-rose-500"></p> 
-             <button type="submit" value="submit" class="px-3 py-2 rounded-lg bg-green-500 my-2 text-slate-900" id="formSubmit">submit</button> 
+             <button type="submit" value="submit" class="px-3 py-2 rounded-lg bg-green-500 my-2 text-slate-900 button" id="formSubmit"><div class="absolute right-0 left-0 top-0 bottom-0 flex items-center justify-center">submit</div></button> 
            </div> 
          </div> 
   </div>  
