@@ -27,26 +27,26 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
       let ei = document.createElement('div');  
       ei.classList = 'w-full min-h-[240px] box-border flex gap-8';  
       ei.innerHTML = `  
-      <div class="sticky right-0 text-slate-900 bg-transparent text-right border-t-2 w-full border-slate-800 flex flex-col items-end grow gap-2 px-2 items-center justify-center">  
+      <div class="sticky right-0 text-slate-900 bg-transparent text-right border-t-2 w-full border-slate-800 flex flex-col items-end grow gap-2 px-2 items-center justify-center gap-2">  
           <div class="absolute left-0 top-0 w-full flex flex-auto flex-col grow border-t-4 border-blue-600 divider -mt-1 md:border-t-6 lg:border-t-8"></div>  
-                    <div class="text-slate-800 font-medium text-lg z-15 sm:text-md md:text-mg xl:text-2xl">floor-${i}</div>  
+                    <div class="text-slate-800 font-medium text-lg z-15 sm:text-md md:text-mg xl:text-2xl w-full text-center">floor-${i}</div>  
                     ${   
                     i !== 0 ?  
-                        `<button class='rounded-lg bg-green-500 px-3 py-2 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 min-w-1/2 max-w-1/2' id='up-${i}' onclick='addToqueue(${i});'>  
+                        `<button class='button up min-w-2/3 lg:min-w-1/2 mx-auto box-border rounded' id='up-${i}' onclick='addToqueue(${i});'><div class='absolute right-0 left-0 top-0 bottom-0 flex items-center justify-center'>
                                             <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='stroke-slate-100' class='w-6 h-6 fill-slate-100'>  
                               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />  
                             </svg>  
-                            <span class="ml-2 text-slate-100 hidden text-md md:block lg:text-xl">up</span>  
-                                          </button>` : ``  
+                            <span class="ml-2 text-slate-100 text-md md:block lg:text-xl hidden">up</span>  
+                                          </div></button>` : ``  
                     }
                   ${ 
                   i !== parseInt(floorCount) ? 
-                    `<button class="rounded-lg bg-rose-500 px-3 py-2 z-15 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 min-w-1/2 max-w-1/2" id='down-${i}' onclick='addToqueue(${i})'>  
+                    `<button class="rounded-lg bg-rose-500 px-3 py-2 z-15 flex flex-nowrap items-center justify-center z-15 md:px-4 md:py-2.5 lg:px-5 lg:py-3 min-w-1/2 button down min-w-2/3 lg:min-w-1/2 mx-auto" id='down-${i}' onclick='addToqueue(${i})'><div class='absolute right-0 left-0 top-0 bottom-0 flex items-center justify-center'>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="stroke-slate-100" class="w-6 h-6 fill-slate-100">  
         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5" />  
       </svg>  
-      <span class="text-slate-100 ml-2 hidden text-md md:block lg:text-xl">down</span>  
-                    </button>`: ''
+      <span class="text-slate-100 ml-2 text-md md:block lg:text-xl hidden">down</span>  
+                    </div></button>`: ''
                   }
                   </div>  
       `;  
@@ -151,13 +151,15 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
     const handle = window.requestAnimationFrame(() => {
       const leftAnimatable = leftDoor.animate(leftAnim, opt);
       const rightAnimatable = rightDoor.animate(rightAnim, opt);
-      leftAnimatable.commitStyles();
-      rightAnimatable.commitStyles();
       rightAnimatable.onfinish = () => {
+        leftAnimatable.commitStyles();
+        rightAnimatable.commitStyles();
         window.requestAnimationFrame(() => {
           const leftResetAnimatable = leftDoor.animate(resetAnim, opt);
           const rightResetAnimatable = rightDoor.animate(resetAnim, opt);
           rightResetAnimatable.onfinish = () => {
+            leftAnimatable.commitStyles();
+            rightAnimatable.commitStyles();
             lift.dataset.moving = 'false';
             if(isLiftFree() && queue.length != 0 && !isLiftMovingToFloor(queue[0]))
               window.requestAnimationFrame(moveLift);
@@ -166,24 +168,6 @@ const generateFloorsAndLifts = (floorCount, liftCount) => {
       }
     });
   }
-    
-  const generateUserInputScreen = () => {  
-    let e = document.getElementById('userInput');  
-    e.innerHTML = `  
-      <div class="flex items-center justify-center h-screen grow w-full">  
-        <div class="bg-slate-200 rounded-lg px-5 py-2 flex flex-col gap-2 grow md:basis-2/3 lg:basis-3/4">  
-          <legend class="text-2xl">Fill the form for Lift Simulation</legend>  
-          <label>Enter the no of Floors:</label>  
-          <input id='floorInput' class="px-3 py-1 rounded" type="number" required name="floors" min="1" value="1" />  
-          <label>Enter the no of Lifts:</label>  
-          <input id="liftInput" class="px-3 py-1 rounded" type="number" required name="lifts" min="1" value="1" />  
-          <input type="submit" value="submit" class="px-3 py-2 rounded-lg bg-green-500 my-2 text-slate-900" onclick="showLiftSimulationScreen(); generateFloorsAndLifts(getFloorsCount(), getLiftsCount())" />  
-        </div>  
-      </div>  
-    `; 
-    const rootwidth = window.innerWidth; 
-    document.getElementById('liftInput').max = `${ parseInt((rootwidth - (rootwidth * (20/100))) / 135 ) }` 
-  }  
     
   const showUserInputScreen = () => {  
     document.getElementById('userInput').classList.remove('hidden');  
