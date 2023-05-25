@@ -677,6 +677,10 @@
     margin-left: auto;  
     margin-right: auto;  
   }  
+  .my-auto {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
     
   .my-1 {  
     margin-top: 0.25rem;  
@@ -759,6 +763,10 @@
   .basis-1\/2 {  
     flex-basis: 50%;  
   }  
+  
+  .basis-full	{
+    flex-basis: 100%;
+  }
     
   basis-1\/12 {  
     flex-basis:  8.333333%;  
@@ -846,6 +854,10 @@
   .overflow-auto {  
     overflow: auto;  
   }  
+  
+  .w-auto{
+    width: auto;
+  }
     
   .overflow-y-auto {  
     overflow-y: auto;  
@@ -902,6 +914,10 @@
     --tw-bg-opacity: 1;  
     background-color: rgb(34 197 94 / var(--tw-bg-opacity));  
   }  
+  
+  .px-8 {
+    padding: 0px 16px;
+  }
     
   .bg-rose-500 {  
     --tw-bg-opacity: 1;  
@@ -1882,7 +1898,11 @@
    
   .min-w-1\/2 { 
     min-width: 50%; 
-  } 
+  }
+  
+  .min-w-2\/3 {
+    min-width: 66.6666%;
+  }
    
   .max-w-1\/2 { 
     max-width: 50% 
@@ -1925,6 +1945,14 @@
    .max-h-\[160px\] { 
      max-height: 160px; 
    } 
+   
+   .max-h-\[64px\] {
+      max-height: 64px;
+    }
+    
+   .min-h-\[160px\] {
+      min-height: 64px;
+    }
     
    .justify-end { 
      justify-content: flex-end; 
@@ -1983,4 +2011,77 @@
   }
   .divider {
     min-width: 100vw;
+  }
+  
+  :root {
+    --color-primary: #6750A4;
+    --color-on-primary: #FFFFFF;
+    --color-surface: #FFFBFE;
+    --color-on-surface: #1C1B1F;
+    --color-on-surface-variant: #CAC4D0;
+  }
+  
+  .up {
+    --color-primary: #1FB341;
+    --color-on-primary: #FFFFFF;
+  }
+  
+  .down {
+    --color-on-primary: #FFFFFF;
+    --color-primary: #B3261E;
+  }
+  
+  @media (min-width: 1024px) {  
+    lg\:min-w-1\/2 {
+      min-width: 50%;
+    }
+  }
+  .button {
+    position: relative;
+    overflow: hidden;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 16px;
+    padding-left: 16px;
+    gap: 8px;
+    text-align: center;
+    border-radius: 999px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    background-color: var(--color-primary);
+  }
+  .button > div {
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+  .button:hover {
+    background-color: var(--color-primary);
+    filter: opacity(90%);
+    color: var(--color-on-primary);
+  }
+  .button:hover > div > svg {
+    color: var(--color-on-primary);
+    border-color: var(--color-on-primary);
+    background-color: transparent;
+  }
+  .button:focus {
+    background-color: var(--color-primary);
+    opacity: 75%;
+    color: var(--color-on-primary);
+  }
+  .button:active {
+    background-color: var(--color-primary);
+    opacity: 66%;
+    color: var(--color-on-primary);
+  }
+  
+  #backButton {
+    padding: 8px;
+    border-radius: 100%;
   }
